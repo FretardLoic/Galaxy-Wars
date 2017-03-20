@@ -1,20 +1,16 @@
-function Player(name) {
-    
-}
-
 function Planet(population, growth, owner) {
     if (population == undefined || growth == undefined) {
         console.log("Le constructeur de Planet prend au moins 2 arguments\n");
-    } else if (!isNaN(population) || population < 0) {
+    } else if (isNaN(population) || population < 0) {
         console.log("L'argument population doit être un nombre positif\n");
-    } else if (!isNaN(growth) || growth <= 0 || growth > 10) {
+    } else if (isNaN(growth) || growth <= 0 || growth > 10) {
         console.log("L'argument growth doit être un nombre strictement"
         + " positif entre 1 et 10\n");
-    } else if (owner != undefined && !owner instanceof Player) {
+    } else if (owner != undefined && !(owner instanceof Player)) {
         console.log("L'argument owner doit être de type Player");
     } else {
-        this.population = int(population);
-        this.growth = int(growth);
+        this.population = Number(population);
+        this.growth = Number(growth);
         this.owner = owner == undefined ? null : owner;
         
         this.grow = function() {
@@ -23,10 +19,11 @@ function Planet(population, growth, owner) {
             }
         }
         
-        this.defend(player) {
-            
+        this.defend = function(player) {
+            return;
         }
-        return;
+        
+        //return this;
     }
-    throw Error("Planet constructor: wrong arguments");
+    //throw new Error("Planet constructor: wrong arguments");
 }
