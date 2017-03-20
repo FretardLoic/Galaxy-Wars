@@ -3,8 +3,9 @@
     <head>
         <title><?php echo $title; ?></title>
         <?php echo $css; ?>
+        <?php echo $jsInit; ?>
         <script>
-            <?php echo $jsInit; ?>
+            <?php echo $jsBody; ?>
         </script>
     </head>
     <body>
