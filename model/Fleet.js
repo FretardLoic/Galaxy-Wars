@@ -1,11 +1,11 @@
 Fleet.DEFAULT_SPEED = 10;
 
-function Fleet(destination, amount, faction, x, y) {
+function Fleet(destination, amount, x, y, faction) {
+  Biomass.call(this, amount, faction, x, y);
   if (destination == undefined && destination == null && !(destination instanceof Planet)) {
     console.log("L'argument destination doit être de type Planet et non-null");
     throw new Error("Fleet constructor: wrong arguments");
   }
-  Biomass.apply(this, [amount, faction, x, y]);
   this.destination = destination;
   
   this.playTurn = function() {
@@ -22,7 +22,14 @@ function Fleet(destination, amount, faction, x, y) {
       this.x += ParseInt(dx * DEFAULT_SPEED / dist);
       this.y += ParseInt(dy * DEFAULT_SPEED / dist);
     } else {
-      destination.defend(this);
+      if (this.faction == destination.faction) {
+        destination.renforce(this);
+      } else {
+        destination.defend(this);
+      }
     }
   }
 }
+
+Fleet.prototype = Object.create(Biomass.prototype);
+Fleet.prototype.constructor = Fleet;
