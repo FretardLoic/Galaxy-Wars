@@ -1,9 +1,11 @@
-function Player(name) {
+function Player(name, color) {
   if (name === undefined || name === null || !(name instanceof String)) {
       console.log("Le nom du Player doit être passé au constructeur\n");
   }
   this.name = name;
+  this.color = color;
   this.biomass = [];
+  this.playTurn = null;
   
   this.addBiomass = function(biomass) {
     if (biomass === undefined || biomass === null || !(biomass instanceof Biomass)) {
@@ -21,11 +23,32 @@ function Player(name) {
       this.biomass.splice(i,1);
     }
   }
+  
+  this.endTurn = function() {
+    function tmp(a) {
+      a.playTurn();
+    }
+    this.biomass.forEach(tmp);
+  }
+  
+  this.drawBiomass = function(ctx) {
+    function tmp(a) {
+      a.draw(ctx);
+    }
+    this.biomass.forEach(tmp);
+  }
+  
+  this.hasLost = function() {
+    return this.biomass.length == 0;
+  }
 }
 
-Player.hasLost = function(player) {
-  if (player === undefined || player === null && !(player instanceof Player)) {
-    throw new Error("L'argument player doit être de type Player, défini et non-null.");
+function IAPlayer(name) {
+  Player.call(this, name);
+  this.playTurn = function() {
+    //a faire
   }
-  return this.biomass.length == 0;
 }
+
+IAPlayer.prototype = Object.create(Player.prototype);
+IAPlayer.prototype.constructor = IAPlayer;

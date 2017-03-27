@@ -1,6 +1,7 @@
 
 function Biomass(amount, x, y, faction) {
-    if (amount == undefined || x == undefined || y == undefined) {
+    if (amount == undefined || x == undefined || y == undefined
+        || amount == null || x == null || y == null) {
         console.log("Le constructeur de Planet prend 3 arguments\n");
     } else if (isNaN(amount) || amount < 0) {
         console.log("L'argument amount doit être un nombre positif\n");
@@ -8,7 +9,7 @@ function Biomass(amount, x, y, faction) {
         console.log("L'argument x doit être un nombre positif\n");
     } else if (isNaN(y) || y < 0) {
         console.log("L'argument y doit être un nombre positif\n");
-    } else if ((faction !== undefined || faction !== null) && !(faction instanceof Player)) {
+    } else if (faction !== undefined && faction !== null && !(faction instanceof Player)) {
         console.log("L'argument faction doit être de type Player");
     } else {
       this.amount = parseInt(amount);
@@ -17,6 +18,7 @@ function Biomass(amount, x, y, faction) {
       this.y = parseInt(y);
       
       this.playTurn;
+      this.draw;
       
       this.getAmount = function() {
         return amount;

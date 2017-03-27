@@ -7,8 +7,20 @@ function Planet(growth, amount, x, y, faction) {
     throw new Error("Planet constructor: wrong arguments");
   }
   this.growth = parseInt(growth);
+  
   this.playTurn = function() {
     this.amount += growth;
+  }
+  
+  this.draw = function(ctx) {
+    if (faction === undefined || faction === null) {
+      ctx.fillStyle = "grey";
+    } else {
+      ctx.fillStyle = this.faction.color;
+    }
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 10 * (growth / 3 + 1), 0, 2 * Math.PI, false);
+    ctx.fill();
   }
   
   this.defend = function(fleet) {
@@ -40,6 +52,15 @@ function Planet(growth, amount, x, y, faction) {
       throw new Error("fleet n'a pas le meme joueur.");
     }
     this.amount += fleet.getAmount();
+    fleet.getFaction().removeBiomass(fleet);
+  }
+  
+  this.launch = function(power, planet) {
+    if (power >= this.amount) {
+      throw new Error("Cette Planet n'a pas assez de troupes.");
+    }
+    this.faction.addBiomass(new Fleet(planet, power, this.x, this.y, this.faction));
+    this.amount -= power;
   }
 }
 
