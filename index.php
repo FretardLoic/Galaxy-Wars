@@ -9,7 +9,7 @@
 </head>
 
 <body id="demo">
-  <button onclick="tmp()">Try it</button> <br/>
+  <button onclick="nextTurn()">Try it</button> <br/>
   <canvas id="zone" width="1000" height="800"></canvas>
 </body>
 <?php
@@ -51,22 +51,54 @@
   var c = new Planet(5, 150, 50, 50, a);
   var d = new Planet(10, 100, 500, 500, a);
   var e = new Planet(0, 100, 200, 300, b);
+  var f = new Planet(3, 100, 600, 200, b);
   
   a.addBiomass(c);
   a.addBiomass(d);
   b.addBiomass(e);
+  b.addBiomass(f);
   
   var maZone = document.getElementById("zone");
-	var ctx = maZone.getContext("2d");
-  var g = new Galaxy([c, d, e, new Planet(5, 100, 600, 600), new Planet(5, 100, 700, 600, null)], 
-    [a, b], ctx);
+  var g = new Galaxy([c, d, e, f, new Planet(5, 100, 600, 600), new Planet(5, 100, 700, 600, null)], 
+    [a, b], maZone);
   
-  c.launch(120, e);
-  function tmp() {
-    a.endTurn();
-    ctx.fillStyle = 'rgba(0,0,0,1)';
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    a.drawBiomass(ctx);
+  var evtPlanet;
+  
+  function firstClick(evt) {
+    alert("Premier click: Tu as cliqué en " + evt.clientX + "," + evt.clientY);
+    console.log(maZone);
+    var i = 0;
+    while (i < g.planets.length) {
+      if (g.planets[i].isOn(evt.clientX, evt.clientY)) {
+        evtPlanet = g.planets[i];
+        maZone.removeEventListener("click", firstClick);
+        maZone.addEventListener("click", secondClick);
+        break;
+      }
+      ++i;
+    }
+    alert("fin");
+  }
+  function secondClick(evt) {
+    alert("Second click: Tu as cliqué en " + evt.clientX + "," + evt.clientY);
+    var i = 0;
+    while (i < g.planets.length) {
+      if (g.planets[i].isOn(evt.clientX, evt.clientY)) {
+        alert("Planete trouvé");
+        evtPlanet.launch(50, g.planets[i]);
+        break;
+      }
+      ++i;
+    }
+    maZone.removeEventListener("click", secondClick);
+    maZone.addEventListener("click", firstClick);
+    alert("fin");
+  }
+  maZone.addEventListener("click", firstClick);
+  //c.launch(120, e);
+  function nextTurn() {
+    g.nextTurn();
+    g.draw();
   }
 </script>
 

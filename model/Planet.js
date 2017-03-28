@@ -8,19 +8,10 @@ function Planet(growth, amount, x, y, faction) {
   }
   this.growth = parseInt(growth);
   
+  this.ray = 4 * (growth / 3 + 5);
+  
   this.playTurn = function() {
     this.amount += growth;
-  }
-  
-  this.draw = function(ctx) {
-    if (faction === undefined || faction === null) {
-      ctx.fillStyle = "grey";
-    } else {
-      ctx.fillStyle = this.faction.color;
-    }
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, 10 * (growth / 3 + 1), 0, 2 * Math.PI, false);
-    ctx.fill();
   }
   
   this.defend = function(fleet) {
@@ -61,6 +52,26 @@ function Planet(growth, amount, x, y, faction) {
     }
     this.faction.addBiomass(new Fleet(planet, power, this.x, this.y, this.faction));
     this.amount -= power;
+  }
+  
+  this.isOn = function(x, y) {
+    var dx = x - this.x;
+    var dy = y - this.y;
+    
+    var dist_square = dx * dx + dy * dy;
+    
+    return dist_square < this.ray * this.ray;
+  }
+  
+  this.draw = function(ctx) {
+    if (faction === undefined || faction === null) {
+      ctx.fillStyle = "grey";
+    } else {
+      ctx.fillStyle = this.faction.color;
+    }
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.ray, 0, 2 * Math.PI, false);
+    ctx.fill();
   }
 }
 

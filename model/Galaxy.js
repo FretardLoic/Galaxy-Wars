@@ -1,5 +1,5 @@
 
-function Galaxy(planets, players, context, printWinner) {
+function Galaxy(planets, players, zone, printWinner) {
   if (planets === undefined || planets === null || !(planets instanceof Array) ||
     planets.length == 0) {
       throw new Error("planets doit être un tableau non-vide.\n");
@@ -26,7 +26,7 @@ function Galaxy(planets, players, context, printWinner) {
   this.planets = planets;
   this.currentPlayerIndex = 0;
   
-  this.context = context;
+  this.context = zone.getContext("2d");
   
   this.getCurrentPlayer = function() {
     return this.players[this.currentPlayerIndex];
@@ -58,10 +58,17 @@ function Galaxy(planets, players, context, printWinner) {
   }
   
   this.draw = function() {
-    function tmp(a) {
-      a.draw(ctx);
-    }
-    this.planets.forEach(tmp);
+    this.context.fillStyle = 'white';
+    this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+    var ctx = this.context;
+    this.players.forEach(function tmp(a) {
+      a.drawBiomass(ctx);
+    });
+    this.planets.forEach(function tmp(a) {
+      if (a.faction === null || a.faction === undefined) {
+        a.draw(ctx);
+      }
+    });
   }
   
   this.printWinner = printWinner;
