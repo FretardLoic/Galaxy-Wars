@@ -13,8 +13,8 @@
   <canvas id="zone" width="1000" height="800"></canvas>
 </body>
 <?php
-    $title = "test";
-    $css = "";
+    //~ $title = "test";
+    //~ $css = "";
     $jsInit = "<script src=\"model/Biomass.js\" ></script>";
     $jsInit .= "<script src=\"model/Player.js\" ></script>";
     $jsInit .= "<script src=\"model/Fleet.js\" ></script>";
@@ -40,12 +40,25 @@
 
 <?php
     $content = ob_get_clean();
-    include "layout.php";
+    //include "layout.php";
+    echo $jsInit;
 ?>
 
 <script>
-  
-  
+  function findPos(obj){
+    var curleft = 0;
+    var curtop = 0;
+    if (obj.offsetParent) {
+        curleft = obj.offsetLeft
+        curtop = obj.offsetTop
+        while (obj = obj.offsetParent) {
+            curleft += obj.offsetLeft
+            curtop += obj.offsetTop
+        }
+    }
+    return [curleft,curtop];
+  }
+
   var a = new Player(new String("mi"), "blue");
   var b = new Player(new String("mi"), "green");
   var c = new Planet(5, 150, 50, 50, a);
@@ -59,40 +72,42 @@
   b.addBiomass(f);
   
   var maZone = document.getElementById("zone");
+  var zonePos = findPos(maZone);
+  
   var g = new Galaxy([c, d, e, f, new Planet(5, 100, 600, 600), new Planet(5, 100, 700, 600, null)], 
     [a, b], maZone);
   
   var evtPlanet;
-  
+  console.log(c.ray);
   function firstClick(evt) {
     alert("Premier click: Tu as cliqué en " + evt.clientX + "," + evt.clientY);
     console.log(maZone);
     var i = 0;
     while (i < g.planets.length) {
-      if (g.planets[i].isOn(evt.clientX, evt.clientY)) {
+      if (g.planets[i].isOn(evt.clientX - zonePos[0], evt.clientY - zonePos[1])) {
+        alert("Planete trouvé");
         evtPlanet = g.planets[i];
         maZone.removeEventListener("click", firstClick);
         maZone.addEventListener("click", secondClick);
+        alert(maZone);
         break;
       }
       ++i;
     }
-    alert("fin");
   }
   function secondClick(evt) {
     alert("Second click: Tu as cliqué en " + evt.clientX + "," + evt.clientY);
     var i = 0;
     while (i < g.planets.length) {
-      if (g.planets[i].isOn(evt.clientX, evt.clientY)) {
+      if (g.planets[i].isOn(evt.clientX - zonePos[0], evt.clientY- zonePos[1])) {
         alert("Planete trouvé");
-        evtPlanet.launch(50, g.planets[i]);
+        evtPlanet.launch(150, g.planets[i]);
         break;
       }
       ++i;
     }
     maZone.removeEventListener("click", secondClick);
     maZone.addEventListener("click", firstClick);
-    alert("fin");
   }
   maZone.addEventListener("click", firstClick);
   //c.launch(120, e);

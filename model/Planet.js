@@ -59,7 +59,7 @@ function Planet(growth, amount, x, y, faction) {
     var dy = y - this.y;
     
     var dist_square = dx * dx + dy * dy;
-    
+    console.log([dist_square, this.ray * this.ray]);
     return dist_square < this.ray * this.ray;
   }
   
