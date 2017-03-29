@@ -1,14 +1,22 @@
 Planet.GROWTH_MAX = 10;
+Planet.NEUTRAL_COLOR = "grey";
+Planet.TEXT_COLOR = "white";
+Planet.CHANGE_FACTION_EVENT = "planet take";
 
-function Planet(growth, amount, x, y, faction) {
+function Planet(name, growth, amount, x, y, faction) {
   Biomass.call(this, amount, x, y, faction);
+  if (name === undefined || name === null || (!(name instanceof String) && typeof name != "string")) {
+    console.log("La planete doit avoir un nom.");
+    throw new Error("Planet constructor: wrong arguments");
+  }
   if (growth == undefined || isNaN(growth) || growth < 0 || growth > Planet.GROWTH_MAX) {
     console.log("L'argument amount doit être un nombre compris entre 0 et 10\n");
     throw new Error("Planet constructor: wrong arguments");
   }
+  this.name = name;
   this.growth = parseInt(growth);
   
-  this.ray = 4 * (growth / 3 + 5);
+  this.ray = 2 * growth + 30;
   
   this.playTurn = function() {
     this.amount += growth;
@@ -24,14 +32,34 @@ function Planet(growth, amount, x, y, faction) {
       this.amount -= fleet.getAmount();
     } else if (this.amount < fleet.getAmount()){
       this.amount = fleet.getAmount() - this.amount;
-      if (this.faction !== null) {
+      if (this.faction !== null && this.faction !== undefined) {
         this.faction.removeBiomass(this);
       }
       this.faction = fleet.getFaction();
       this.faction.addBiomass(this);
+      document.dispatchEvent(new CustomEvent(
+        Planet.CHANGE_FACTION_EVENT, 
+        { 
+          detail: {
+            src: this, 
+          }
+        }
+      ));
     } else {
-      this.amount = 0;
-      this.faction = null;
+      if (this.faction !== null) {
+        this.amount = 0;
+        this.faction = null;
+        document.dispatchEvent(new CustomEvent(
+          Planet.CHANGE_FACTION_EVENT, 
+          { 
+            detail: {
+              src: this, 
+            }
+          }
+        ));
+      } else {
+        this.amount = 0;
+      }
     }
     fleet.getFaction().removeBiomass(fleet);
   }
@@ -48,7 +76,7 @@ function Planet(growth, amount, x, y, faction) {
   
   this.launch = function(power, planet) {
     if (power >= this.amount) {
-      throw new Error("Cette Planet n'a pas assez de troupes.");
+      throw new Error("Cette Planet n'a pas assez de troupes.\n");
     }
     this.faction.addBiomass(new Fleet(planet, power, this.x, this.y, this.faction));
     this.amount -= power;
@@ -64,14 +92,18 @@ function Planet(growth, amount, x, y, faction) {
   }
   
   this.draw = function(ctx) {
-    if (faction === undefined || faction === null) {
-      ctx.fillStyle = "grey";
+    if (this.faction === undefined || this.faction === null) {
+      ctx.fillStyle = Planet.NEUTRAL_COLOR;
     } else {
       ctx.fillStyle = this.faction.color;
     }
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.ray, 0, 2 * Math.PI, false);
     ctx.fill();
+    
+    ctx.fillStyle = Planet.TEXT_COLOR;
+    ctx.fillText(this.amount, this.x, this.y);
+    
   }
 }
 
