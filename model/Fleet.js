@@ -3,13 +3,12 @@ Fleet.DEFAULT_SPEED = 40;
 function Fleet(destination, amount, x, y, faction) {
   Biomass.call(this, amount, x, y, faction);
   if (destination === undefined || destination === null || !(destination instanceof Planet)) {
-    console.log(destination);
-    console.log("L'argument destination doit être défini, de type Planet et non-null.");
-    throw new Error("Fleet constructor: wrong arguments.");
+    console.log("L'argument destination doit être défini, de type Planet et non-null.\n");
+    throw new Error("Fleet constructor: wrong arguments.\n");
   }
   if (amount <= 0) {
-    console.log("L'argument amount doit être strictement positif.");
-    throw new Error("Fleet constructor: wrong arguments.");
+    console.log("L'argument amount doit être strictement positif.\n");
+    throw new Error("Fleet constructor: wrong arguments.\n");
   }
   
   

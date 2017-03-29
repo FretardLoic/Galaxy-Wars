@@ -1,6 +1,6 @@
 function Player(name, color) {
-  if (name === undefined || name === null || !(name instanceof String)) {
-      console.log("Le nom du Player doit être passé au constructeur\n");
+  if (name === undefined || name === null || (!(name instanceof String) && typeof name != "string")) {
+      throw new Error("Le nom du Player doit être passé au constructeur.\n");
   }
   this.name = name;
   this.color = color;
@@ -9,14 +9,14 @@ function Player(name, color) {
   
   this.addBiomass = function(biomass) {
     if (biomass === undefined || biomass === null || !(biomass instanceof Biomass)) {
-      throw new Error("biomass doit une instance de biomass définie et non-null");
+      throw new Error("biomass doit être une instance de biomass définie et non-null.");
     }
     this.biomass.push(biomass);
   }
   
   this.removeBiomass = function(biomass) {
     if (biomass === undefined || biomass === null || !(biomass instanceof Biomass)) {
-      throw new Error("biomass doit une instance de biomass définie et non-null");
+      throw new Error("biomass doit être une instance de biomass définie et non-null.");
     }
     var i = this.biomass.indexOf(biomass);
     if (i != -1) {

@@ -1,3 +1,4 @@
+Galaxy.BACKGROUND_COLOR = "white";
 
 function Galaxy(planets, players, zone, printWinner) {
   if (planets === undefined || planets === null || !(planets instanceof Array) ||
@@ -14,6 +15,10 @@ function Galaxy(planets, players, zone, printWinner) {
   for (var i = 0; i < planets.length; ++i) {
     if (planets[i] === undefined || planets[i] === null || ! (planets[i] instanceof Planet)) {
       throw new Error("planets ne doit pas contenir d'élément indéfinie ou null.\n");
+    }
+    if (planets[i].x - planets[i].ray < 0 || planets[i].x + planets[i].ray > zone.width
+        || planets[i].y - planets[i].ray < 0 || planets[i].y + planets[i].ray > zone.height) {
+      throw new Error("Une planète ne rentre pas dans la zone.\n");
     }
   }
   for (var i = 0; i < players.length; ++i) {
@@ -45,10 +50,10 @@ function Galaxy(planets, players, zone, printWinner) {
   
   this.nextPlayer = function() {
     this.getCurrentPlayer().endTurn();
-    this.getCurrentPlayer().drawBiomass(this.context);
     function tmp(a) {
       return ! a.hasLost();
     }
+    this.draw();
     this.players = players.filter(tmp);
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
   }
@@ -58,7 +63,7 @@ function Galaxy(planets, players, zone, printWinner) {
   }
   
   this.draw = function() {
-    this.context.fillStyle = 'white';
+    this.context.fillStyle = Galaxy.BACKGROUND_COLOR;
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
     var ctx = this.context;
     this.players.forEach(function tmp(a) {

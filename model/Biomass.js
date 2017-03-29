@@ -2,15 +2,15 @@
 function Biomass(amount, x, y, faction) {
     if (amount == undefined || x == undefined || y == undefined
         || amount == null || x == null || y == null) {
-        console.log("Le constructeur de Planet prend 3 arguments\n");
+        console.log("Le constructeur de Planet prend 3 arguments.\n");
     } else if (isNaN(amount) || amount < 0) {
-        console.log("L'argument amount doit être un nombre positif\n");
+        console.log("L'argument amount doit être un nombre positif.\n");
     } else if (isNaN(x) || x < 0) {
-        console.log("L'argument x doit être un nombre positif\n");
+        console.log("L'argument x doit être un nombre positif.\n");
     } else if (isNaN(y) || y < 0) {
-        console.log("L'argument y doit être un nombre positif\n");
+        console.log("L'argument y doit être un nombre positif.\n");
     } else if (faction !== undefined && faction !== null && !(faction instanceof Player)) {
-        console.log("L'argument faction doit être de type Player");
+        console.log("L'argument faction doit être de type Player.\n");
     } else {
       this.amount = parseInt(amount);
       this.faction = faction;
@@ -38,5 +38,5 @@ function Biomass(amount, x, y, faction) {
       
       return this;
     }
-    throw new Error("Biomass constructor: wrong arguments");
+    throw new Error("Biomass constructor: wrong arguments\n");
 }
