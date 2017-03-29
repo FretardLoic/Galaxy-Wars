@@ -1,6 +1,6 @@
 Galaxy.BACKGROUND_COLOR = "white";
 
-function Galaxy(planets, players, zone, printWinner) {
+function Galaxy(planets, players, zone, printWinner, backgroundImg) {
   if (planets === undefined || planets === null || !(planets instanceof Array) ||
     planets.length == 0) {
       throw new Error("planets doit être un tableau non-vide.\n");
@@ -32,6 +32,7 @@ function Galaxy(planets, players, zone, printWinner) {
   this.currentPlayerIndex = 0;
   
   this.context = zone.getContext("2d");
+  this.backgroundImg = backgroundImg;
   
   this.getCurrentPlayer = function() {
     return this.players[this.currentPlayerIndex];
@@ -44,7 +45,7 @@ function Galaxy(planets, players, zone, printWinner) {
       this.nextPlayer();
     }
     if (this.isFinish()) {
-      this.printWinner(); //this.getCurrentPlayer() en argument ?
+      this.printWinner();
     }
   }
   
@@ -65,6 +66,9 @@ function Galaxy(planets, players, zone, printWinner) {
   this.draw = function() {
     this.context.fillStyle = Galaxy.BACKGROUND_COLOR;
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+    if (backgroundImg !== undefined && backgroundImg !== null && backgroundImg instanceof Image) {
+      this.context.drawImage(this.backgroundImg, 0, 0, this.context.canvas.width, this.context.canvas.height);
+    }
     var ctx = this.context;
     this.players.forEach(function tmp(a) {
       a.drawBiomass(ctx);

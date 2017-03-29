@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 	<title>sans titre</title>
 	<meta charset="utf-8" />
@@ -22,13 +21,21 @@
 <script src="model/Galaxy.js" ></script>
 
 <script>
+  var imgb = new Image();
+  imgb.src = "img/battlecruiser.jpg";
 
+  var img = [];
+  for (var i = 0; i < 6; ++i) {
+    img.push(new Image());
+    img[i].src = "img/p" + (i + 1) + ".png";
+  }
+  
   var a = new Player(new String("mi"), "blue");
   var b = new Player(new String("mi2"), "green");
-  var c = new Planet("azer1", 5, 150, 50, 50, a);
-  var d = new Planet("azer2", 10, 100, 500, 400, a);
-  var e = new Planet("azer3", 0, 100, 200, 300, b);
-  var f = new Planet("azer4", 3, 100, 600, 200, b);
+  var c = new Planet("azer1", 5, 150, 50, 50, a, img[0]);
+  var d = new Planet("azer2", 10, 100, 500, 400, a, img[1]);
+  var e = new Planet("azer3", 0, 100, 200, 300, b, img[2]);
+  var f = new Planet("azer4", 3, 100, 600, 200, b,  img[3]);
   
   a.addBiomass(c);
   a.addBiomass(d);
@@ -38,10 +45,11 @@
   var maZone = document.getElementById("zone");
   var info = document.getElementById("info");
   
-  var g = new Galaxy([c, d, e, f, new Planet("azer5", 5, 100, 600, 100), new Planet("azer6", 5, 100, 700, 400, null)], 
-    [a, b], maZone);
+  var g = new Galaxy([c, d, e, f, new Planet("azer5", 5, 100, 600, 100, undefined, img[4]), 
+    new Planet("azer6", 5, 100, 700, 400, undefined, img[5])], 
+    [a, b], maZone, function() {alert(this.players[0].name)}, imgb);
   document.getElementById("joueur").innerHTML = g.getCurrentPlayer().name;
-    
+  
   function tmp() {document.getElementById("info").innerHTML = "salut";}
   
   
@@ -76,17 +84,21 @@
               }
               if (isNaN(rep)) {
                 info.innerHTML += rep + " ne peut pas représenter la puissance d'une flotte.<br />";
-              } else {
+              }else if (rep >= tab[i].amount) {
+                info.innerHTML += tab[i].name + " ne peut pas lancer une flotte aussi grande.<br/>";
+              }else {
                 var str;
-                if (rep == "1") {
+                if (rep == 1) {
                   str = "Un de vos vaisseaux";
                 } else {
                   str = "Une flotte de " + rep + " de vos vaisseaux"
                 }
                 if (g.planets[j].faction === g.getCurrentPlayer()) {
-                  info.innerHTML += str + " a été envoyé" + (rep == "1"? "" : "e") + " en renfort.<br />";
+                  info.innerHTML += str + " a été envoyé" + (rep == "1"? "" : "e") + " en renfort depuis " 
+                    + tab[i].name + " vers " + g.planets[j].name + ".<br />";
                 } else {
-                  info.innerHTML += str + " est parti" + (rep == "1"? "" : "e") + " soummettre vos ennemis.<br />";
+                  info.innerHTML += str + " est parti" + (rep == "1"? "" : "e") + " soummettre vos ennemis depuis " 
+                    + tab[i].name + " vers " + g.planets[j].name + ".<br />";
                 }
                 tab[i].launch(parseInt(rep), g.planets[j]);
               }
@@ -107,10 +119,10 @@
   }
   
   document.addEventListener(Planet.CHANGE_FACTION_EVENT, function (evt) {
-    if (evt.detail.src.faction === null) {
-      document.getElementById("info").innerHTML += evt.detail.src.name + " est devenue neutre. <br/>";
+    if (evt.detail.faction === null) {
+      document.getElementById("info").innerHTML += evt.detail.name + " est devenue neutre. <br/>";
     } else {
-      document.getElementById("info").innerHTML += evt.detail.src.name + " a été prise par " + evt.detail.src.faction.name + ".<br/>";
+      document.getElementById("info").innerHTML += evt.detail.name + " a été prise par " + evt.detail.faction.name + ".<br/>";
     }
   });
   maZone.addEventListener("click", firstClick);
