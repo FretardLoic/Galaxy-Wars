@@ -1,6 +1,6 @@
-Galaxy.BACKGROUND_COLOR = "white";
+Galaxy.BACKGROUND_COLOR = "black";
 
-function Galaxy(planets, players, zone, printWinner, backgroundImg) {
+function Galaxy(planets, players, context, printWinner, backgroundImg) {
   if (planets === undefined || planets === null || !(planets instanceof Array) ||
     planets.length == 0) {
       throw new Error("planets doit être un tableau non-vide.\n");
@@ -12,26 +12,33 @@ function Galaxy(planets, players, zone, printWinner, backgroundImg) {
   if (printWinner !== undefined && printWinner !== null && !(printWinner instanceof Function)) {
       throw new Error("printWinner doit être une fonction.\n");
   }
+  for (var i = 0; i < players.length; ++i) {
+    if (players[i] === undefined || players[i] === null || ! (players[i] instanceof Player)) {
+      throw new Error("players doit contenir des éléments de type Player définis et non-null.\n");
+    }
+    if (players[i] instanceof IAPlayer) {
+      players[i].galaxy = this;
+    }
+    
+    planets = planets.concat(players[i].biomass);
+  }
   for (var i = 0; i < planets.length; ++i) {
     if (planets[i] === undefined || planets[i] === null || ! (planets[i] instanceof Planet)) {
-      throw new Error("planets ne doit pas contenir d'élément indéfinie ou null.\n");
+      throw new Error("planets doit contenir des éléments de type Planet définis et non-null.\n");
     }
     if (planets[i].x - planets[i].ray < 0 || planets[i].x + planets[i].ray > zone.width
         || planets[i].y - planets[i].ray < 0 || planets[i].y + planets[i].ray > zone.height) {
       throw new Error("Une planète ne rentre pas dans la zone.\n");
     }
-  }
-  for (var i = 0; i < players.length; ++i) {
-    if (players[i] === undefined || players[i] === null || ! (players[i] instanceof Player)) {
-      throw new Error("players ne doit pas contenir d'élément indéfinie ou null.\n");
-    }
+    planets[i].context = context;
   }
   
   this.players = players;
   this.planets = planets;
   this.currentPlayerIndex = 0;
   
-  this.context = zone.getContext("2d");
+  this.context = context;
+  
   this.backgroundImg = backgroundImg;
   
   this.getCurrentPlayer = function() {
@@ -40,7 +47,7 @@ function Galaxy(planets, players, zone, printWinner, backgroundImg) {
   
   this.nextTurn = function() {
     this.nextPlayer();
-    while (! this.isFinish() && this.getCurrentPlayer().playTurn !== null) {
+    while (! this.isFinish() && this.getCurrentPlayer() instanceof IAPlayer) {
       this.getCurrentPlayer().playTurn();
       this.nextPlayer();
     }
@@ -69,18 +76,16 @@ function Galaxy(planets, players, zone, printWinner, backgroundImg) {
     if (backgroundImg !== undefined && backgroundImg !== null && backgroundImg instanceof Image) {
       this.context.drawImage(this.backgroundImg, 0, 0, this.context.canvas.width, this.context.canvas.height);
     }
-    var ctx = this.context;
+    
     this.players.forEach(function tmp(a) {
-      a.drawBiomass(ctx);
+      a.drawBiomass();
     });
     this.planets.forEach(function tmp(a) {
       if (a.faction === null || a.faction === undefined) {
-        a.draw(ctx);
+        a.draw();
       }
     });
   }
   
   this.printWinner = printWinner;
-  
-  this.draw();
 }

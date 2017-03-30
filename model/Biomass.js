@@ -1,5 +1,5 @@
 
-function Biomass(amount, x, y, faction) {
+function Biomass(amount, x, y, faction, context) {
     if (amount == undefined || x == undefined || y == undefined
         || amount == null || x == null || y == null) {
         console.log("Le constructeur de Planet prend 3 arguments.\n");
@@ -16,6 +16,8 @@ function Biomass(amount, x, y, faction) {
       this.faction = faction;
       this.x = parseInt(x);
       this.y = parseInt(y);
+      
+      this.context = context;
       
       this.playTurn;
       this.draw;

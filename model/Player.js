@@ -31,9 +31,9 @@ function Player(name, color) {
     this.biomass.forEach(tmp);
   }
   
-  this.drawBiomass = function(ctx) {
+  this.drawBiomass = function() {
     function tmp(a) {
-      a.draw(ctx);
+      a.draw();
     }
     this.biomass.forEach(tmp);
   }
@@ -43,10 +43,71 @@ function Player(name, color) {
   }
 }
 
-function IAPlayer(name) {
-  Player.call(this, name);
+function IAPlayer(name, color) {
+  Player.call(this, name, color);
+  
+  this.galaxy;
+  
   this.playTurn = function() {
-    //a faire
+    if (this.galaxy === undefined || this.galaxy === null || ! (this.galaxy instanceof Galaxy)) {
+      return;
+    }
+    
+    var me = this;
+    var planets = this.biomass.filter(function(a) {
+      return a instanceof Planet;
+    });
+    
+    var fleets = [];
+    var targets = [];
+    var weaks = [];
+    
+    function dist_cost(launcher,target) {
+      var distx = launcher.x - target.x;
+      var disty = launcher.y - target.y;
+      
+      var dist_square = distx * distx + disty * disty;
+      
+      return dist_square / 10000;
+    }
+    
+    
+    for (var i = 0; i < planets.length; ++i) {
+      fleets[i] = 0;
+      targets[i] = this.galaxy.planets[0];
+      weaks[i] = this.galaxy.planets[0].amount + dist_cost(planets[i], this.galaxy.planets[0]);
+    }
+    
+    
+    g.players.forEach(function(p) {
+      p.biomass.forEach(function(b) {
+        if (b.faction !== me && b instanceof Fleet && b.destination.faction === me) {
+          var i = 0;
+          while (planets[i] !== b.destination) {
+            ++i;
+          }
+          fleets[i] += b.amount;
+        }
+      });
+    });
+    
+    g.planets.forEach(function(p) {
+      if (p.faction !== me) {
+        for (var i = 0; i < planets.length; ++i) {
+          var weak = p.amount + dist_cost(planets[i],p);
+          if (weak < weaks[i]) {
+            targets[i] = p;
+            weaks[i] = weak;
+          }
+        }
+      }
+    });
+    
+    for (var i = 0; i < planets.length; ++i) {
+      if (0.8 * planets[i].amount - fleets[i] - weaks[i] > 0) {
+        planets[i].launch(planets[i].amount * 0.8, targets[i]);
+      }
+    }
   }
 }
 

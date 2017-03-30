@@ -1,7 +1,7 @@
-Fleet.DEFAULT_SPEED = 40;
+Fleet.DEFAULT_SPEED = 30;
 
-function Fleet(destination, amount, x, y, faction) {
-  Biomass.call(this, amount, x, y, faction);
+function Fleet(destination, amount, x, y, faction, context) {
+  Biomass.call(this, amount, x, y, faction, context);
   if (destination === undefined || destination === null || !(destination instanceof Planet)) {
     console.log("L'argument destination doit être défini, de type Planet et non-null.\n");
     throw new Error("Fleet constructor: wrong arguments.\n");
@@ -37,11 +37,14 @@ function Fleet(destination, amount, x, y, faction) {
     }
   }
   
-  this.draw = function(ctx) {
-    ctx.fillStyle = this.faction.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, (amount / 20 + 2), 0, 2 * Math.PI, false);
-    ctx.fill();
+  this.draw = function() {
+    if (this.context === null || this.context === undefined) {
+      return;
+    }
+    this.context.fillStyle = this.faction.color;
+    this.context.beginPath();
+    this.context.arc(this.x, this.y, (amount / 70 + 5), 0, 2 * Math.PI, false);
+    this.context.fill();
   }
 }
 
