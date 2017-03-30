@@ -3,7 +3,7 @@ Planet.NEUTRAL_COLOR = "grey";
 Planet.TEXT_COLOR = "white";
 Planet.CHANGE_FACTION_EVENT = "planet take";
 
-function Planet(name, growth, amount, x, y, faction) {
+function Planet(name, growth, amount, x, y, faction, img) {
   Biomass.call(this, amount, x, y, faction);
   if (name === undefined || name === null || (!(name instanceof String) && typeof name != "string")) {
     console.log("La planete doit avoir un nom.");
@@ -15,6 +15,7 @@ function Planet(name, growth, amount, x, y, faction) {
   }
   this.name = name;
   this.growth = parseInt(growth);
+  this.img = img;
   
   this.ray = 2 * growth + 30;
   
@@ -40,9 +41,7 @@ function Planet(name, growth, amount, x, y, faction) {
       document.dispatchEvent(new CustomEvent(
         Planet.CHANGE_FACTION_EVENT, 
         { 
-          detail: {
-            src: this, 
-          }
+          detail:this, 
         }
       ));
     } else {
@@ -52,9 +51,7 @@ function Planet(name, growth, amount, x, y, faction) {
         document.dispatchEvent(new CustomEvent(
           Planet.CHANGE_FACTION_EVENT, 
           { 
-            detail: {
-              src: this, 
-            }
+            detail: this
           }
         ));
       } else {
@@ -101,8 +98,14 @@ function Planet(name, growth, amount, x, y, faction) {
     ctx.arc(this.x, this.y, this.ray, 0, 2 * Math.PI, false);
     ctx.fill();
     
+    if (img !== undefined && img !== null && img instanceof Image) {
+      ctx.drawImage(this.img, this.x - this.ray, this.y - this.ray, 2 * this.ray, 2 * this.ray);
+    }
+    
     ctx.fillStyle = Planet.TEXT_COLOR;
-    ctx.fillText(this.amount, this.x, this.y);
+    ctx.textAlign="center";
+    ctx.fillText(this.name, this.x, this.y - 10);
+    ctx.fillText("pop : " + this.amount, this.x, this.y + 10);
     
   }
 }
