@@ -1,15 +1,16 @@
 Planet.GROWTH_MAX = 10;
 Planet.NEUTRAL_COLOR = "grey";
-Planet.TEXT_COLOR = "white";
+Planet.TEXT_COLOR = "red";
 Planet.CHANGE_FACTION_EVENT = "planet take";
+Planet.LAUNCHING_EVENT = "fleet_launched";
 
-function Planet(name, growth, amount, x, y, faction, img) {
-  Biomass.call(this, amount, x, y, faction);
+function Planet(name, growth, amount, x, y, img, faction, context) {
+  Biomass.call(this, amount, x, y, faction, context);
   if (name === undefined || name === null || (!(name instanceof String) && typeof name != "string")) {
     console.log("La planete doit avoir un nom.");
     throw new Error("Planet constructor: wrong arguments");
   }
-  if (growth == undefined || isNaN(growth) || growth < 0 || growth > Planet.GROWTH_MAX) {
+  if (growth == undefined || isNaN(growth) || growth < 1 || growth > Planet.GROWTH_MAX) {
     console.log("L'argument amount doit être un nombre compris entre 0 et 10\n");
     throw new Error("Planet constructor: wrong arguments");
   }
@@ -17,7 +18,7 @@ function Planet(name, growth, amount, x, y, faction, img) {
   this.growth = parseInt(growth);
   this.img = img;
   
-  this.ray = 2 * growth + 30;
+  this.ray = 2 * growth + 15;
   
   this.playTurn = function() {
     this.amount += growth;
@@ -39,8 +40,7 @@ function Planet(name, growth, amount, x, y, faction, img) {
       this.faction = fleet.getFaction();
       this.faction.addBiomass(this);
       document.dispatchEvent(new CustomEvent(
-        Planet.CHANGE_FACTION_EVENT, 
-        { 
+        Planet.CHANGE_FACTION_EVENT, { 
           detail:this, 
         }
       ));
@@ -49,8 +49,7 @@ function Planet(name, growth, amount, x, y, faction, img) {
         this.amount = 0;
         this.faction = null;
         document.dispatchEvent(new CustomEvent(
-          Planet.CHANGE_FACTION_EVENT, 
-          { 
+          Planet.CHANGE_FACTION_EVENT, { 
             detail: this
           }
         ));
@@ -75,8 +74,20 @@ function Planet(name, growth, amount, x, y, faction, img) {
     if (power >= this.amount) {
       throw new Error("Cette Planet n'a pas assez de troupes.\n");
     }
-    this.faction.addBiomass(new Fleet(planet, power, this.x, this.y, this.faction));
-    this.amount -= power;
+    if (power < 1) {
+      throw new Error("Ce n'est pas une flotte.\n");
+    }
+    var fleet = new Fleet(planet, parseInt(power), this.x, this.y, this.faction, this.context);
+    this.faction.addBiomass(fleet);
+    this.amount -= parseInt(power);
+    document.dispatchEvent(new CustomEvent(
+      Planet.LAUNCHING_EVENT, { 
+        detail: {
+          fleet: fleet,
+          launcher: this,
+        }
+      }
+    ));
   }
   
   this.isOn = function(x, y) {
@@ -88,24 +99,28 @@ function Planet(name, growth, amount, x, y, faction, img) {
     return dist_square < this.ray * this.ray;
   }
   
-  this.draw = function(ctx) {
-    if (this.faction === undefined || this.faction === null) {
-      ctx.fillStyle = Planet.NEUTRAL_COLOR;
-    } else {
-      ctx.fillStyle = this.faction.color;
+  this.draw = function() {
+    if (this.context === null || this.context === undefined) {
+      return;
     }
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.ray, 0, 2 * Math.PI, false);
-    ctx.fill();
+    if (this.faction === undefined || this.faction === null) {
+      this.context.fillStyle = Planet.NEUTRAL_COLOR;
+    } else {
+      this.context.fillStyle = this.faction.color;
+    }
+    this.context.beginPath();
+    this.context.arc(this.x, this.y, this.ray, 0, 2 * Math.PI, false);
+    this.context.fill();
     
     if (img !== undefined && img !== null && img instanceof Image) {
-      ctx.drawImage(this.img, this.x - this.ray, this.y - this.ray, 2 * this.ray, 2 * this.ray);
+      var border = 4;
+      this.context.drawImage(this.img, this.x - (this.ray - border), this.y - (this.ray - border), 
+          2 * (this.ray - border), 2 * (this.ray - border));
     }
     
-    ctx.fillStyle = Planet.TEXT_COLOR;
-    ctx.textAlign="center";
-    ctx.fillText(this.name, this.x, this.y - 10);
-    ctx.fillText("pop : " + this.amount, this.x, this.y + 10);
+    this.context.fillStyle = Planet.TEXT_COLOR;
+    this.context.fillText(this.name, this.x, this.y - 10);
+    this.context.fillText(this.amount, this.x, this.y + 10);
     
   }
 }
