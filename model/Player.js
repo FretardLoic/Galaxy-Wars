@@ -68,14 +68,22 @@ function IAPlayer(name, color) {
       
       var dist_square = distx * distx + disty * disty;
       
-      return dist_square / 10000;
+      var dist;
+      for (dist = 0; dist * dist < dist_square; ++dist) {
+      }
+      
+      return dist / 50;
     }
     
     
     for (var i = 0; i < planets.length; ++i) {
       fleets[i] = 0;
-      targets[i] = this.galaxy.planets[0];
-      weaks[i] = this.galaxy.planets[0].amount + dist_cost(planets[i], this.galaxy.planets[0]);
+      var j = 0;
+      while (this.galaxy.planets[j].faction === this) {
+        ++j;
+      }
+      targets[i] = this.galaxy.planets[j];
+      weaks[i] = this.galaxy.planets[j].amount + dist_cost(planets[i], this.galaxy.planets[j]);
     }
     
     
@@ -103,9 +111,22 @@ function IAPlayer(name, color) {
       }
     });
     
+    for (var i = 0; i < targets.length; ++i) {
+      for (var j = i + 1; j < targets.length; ++j) {
+        if (targets[i] === targets[j]) {
+          weaks[i] = (weaks[i] + weaks[j]) * 40 / 100;
+          weaks[j] = weaks[i];
+        }
+      }
+    }
+    
+    
     for (var i = 0; i < planets.length; ++i) {
-      if (0.8 * planets[i].amount - fleets[i] - weaks[i] > 0) {
-        planets[i].launch(planets[i].amount * 0.8, targets[i]);
+      if (0.7 * planets[i].amount - fleets[i] - weaks[i] > 0) {
+        planets[i].launch(planets[i].amount * 0.7, targets[i]);
+      }
+      if(targets[i].name == "azer7") {
+        console.log(targets[i].faction == me);
       }
     }
   }
