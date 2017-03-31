@@ -151,7 +151,6 @@
   });
   
   document.addEventListener(Planet.LAUNCHING_EVENT, function(evt) {
-    console.log(evt.detail.launcher.faction);
     var str = evt.detail.launcher.faction.name + " a lancé ";
     if (evt.detail.fleet.amount == 1) {
       str += "un vaisseau";
