@@ -54,6 +54,8 @@ function IAPlayer(name, color) {
     }
     
     var me = this;
+    
+    
     var planets = this.biomass.filter(function(a) {
       return a instanceof Planet;
     });
@@ -72,7 +74,7 @@ function IAPlayer(name, color) {
       for (dist = 0; dist * dist < dist_square; ++dist) {
       }
       
-      return dist / 50;
+      return dist * Planet.GROWTH_MAX / 2 / Fleet.DEFAULT_SPEED;
     }
     
     
@@ -114,7 +116,7 @@ function IAPlayer(name, color) {
     for (var i = 0; i < targets.length; ++i) {
       for (var j = i + 1; j < targets.length; ++j) {
         if (targets[i] === targets[j]) {
-          weaks[i] = (weaks[i] + weaks[j]) * 40 / 100;
+          weaks[i] = (weaks[i] + weaks[j]) * 45 / 100;
           weaks[j] = weaks[i];
         }
       }
@@ -124,9 +126,6 @@ function IAPlayer(name, color) {
     for (var i = 0; i < planets.length; ++i) {
       if (0.7 * planets[i].amount - fleets[i] - weaks[i] > 0) {
         planets[i].launch(planets[i].amount * 0.7, targets[i]);
-      }
-      if(targets[i].name == "azer7") {
-        console.log(targets[i].faction == me);
       }
     }
   }
