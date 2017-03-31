@@ -3,6 +3,15 @@ Planet.NEUTRAL_COLOR = "grey";
 Planet.TEXT_COLOR = "red";
 Planet.CHANGE_FACTION_EVENT = "planet take";
 Planet.LAUNCHING_EVENT = "fleet_launched";
+Planet.RAY = function(growth) {
+  return 2 * growth + 15;
+}
+Planet.ImageNb = 11;
+Planet.getImage = function(n) {
+  var img = new Image();
+  img.src = "img/p" + (n % Planet.ImageNb + 1)  + ".png";
+  return img;
+}
 
 function Planet(name, growth, amount, x, y, img, faction, context) {
   Biomass.call(this, amount, x, y, faction, context);
@@ -11,14 +20,14 @@ function Planet(name, growth, amount, x, y, img, faction, context) {
     throw new Error("Planet constructor: wrong arguments");
   }
   if (growth == undefined || isNaN(growth) || growth < 1 || growth > Planet.GROWTH_MAX) {
-    console.log("L'argument amount doit être un nombre compris entre 0 et 10\n");
+    console.log("L'argument growth doit être un nombre compris entre 1 et 10\n");
     throw new Error("Planet constructor: wrong arguments");
   }
   this.name = name;
   this.growth = parseInt(growth);
   this.img = img;
   
-  this.ray = 2 * growth + 15;
+  this.ray = Planet.RAY(growth);
   
   this.playTurn = function() {
     this.amount += growth;
@@ -112,7 +121,7 @@ function Planet(name, growth, amount, x, y, img, faction, context) {
     this.context.arc(this.x, this.y, this.ray, 0, 2 * Math.PI, false);
     this.context.fill();
     
-    if (img !== undefined && img !== null && img instanceof Image) {
+    if (this.img !== undefined && this.img !== null && (this.img instanceof Image)) {
       var border = 4;
       this.context.drawImage(this.img, this.x - (this.ray - border), this.y - (this.ray - border), 
           2 * (this.ray - border), 2 * (this.ray - border));
@@ -127,3 +136,19 @@ function Planet(name, growth, amount, x, y, img, faction, context) {
 
 Planet.prototype = Object.create(Biomass.prototype);
 Planet.prototype.constructor = Planet;
+
+Planet.isOnContact = function(p1, p2) {
+  if (p1 === undefined || p1 === null || ! (p1 instanceof Planet)) {
+    throw new Error("p1 doit être une instance de Planet définis et non-null.\n");
+  }
+  if (p2 === undefined || p2 === null || ! (p2 instanceof Planet)) {
+    throw new Error("p2 doit être une instance de Planet définis et non-null.\n");
+  }
+  var dx = p1.x - p2.x;
+  var dy = p1.y - p2.y;
+  
+  var dist_square = dx * dx + dy * dy;
+  var rayAdd = p1.ray + p2.ray;
+  
+  return rayAdd * rayAdd > dist_square;
+}

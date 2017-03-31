@@ -1,4 +1,4 @@
-Fleet.DEFAULT_SPEED = 30;
+Fleet.DEFAULT_SPEED = 100;
 
 function Fleet(destination, amount, x, y, faction, context) {
   Biomass.call(this, amount, x, y, faction, context);
@@ -41,9 +41,13 @@ function Fleet(destination, amount, x, y, faction, context) {
     if (this.context === null || this.context === undefined) {
       return;
     }
+    var root;
+    for (root = 0; root * root < amount; ++root) {
+    }
+    
     this.context.fillStyle = this.faction.color;
     this.context.beginPath();
-    this.context.arc(this.x, this.y, (amount / 70 + 5), 0, 2 * Math.PI, false);
+    this.context.arc(this.x, this.y, (root / 5 + 2), 0, 2 * Math.PI, false);
     this.context.fill();
   }
 }
