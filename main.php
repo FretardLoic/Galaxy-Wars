@@ -42,7 +42,7 @@
     
     var g = Galaxy.generator(players, <?php echo $_GET["aiNb"]; ?>, <?php echo $_GET["planetsNb"]; ?>, ctx, function() {
       alert(this.players[0].name + " win!!!");
-      window.location.replace("begin.php");}, img);
+      window.location.replace("index.php");}, img);
     
     img.addEventListener('load', function() {
       g.draw();
