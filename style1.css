@@ -1,1 +1,34 @@
+body {
+    background: url("img/galaxy.jpg");
+    width: 99%;
+    height: 100%;
+}
 
+#zone {
+    float: left;
+    margin-right: 10px;
+}
+
+#menu {
+    position: relative;
+}
+
+#joueur-label {
+    font-size: 1.6em;
+    font-weight: bold;
+    color:white;
+    display: inline-block;
+    margin-left: 1em;
+}
+
+#end-turn {
+    position: absolute;
+    right: 0px;
+    font-size: 1.6em;
+    font-weight: bold;
+    height: 3em;
+}
+
+#info {
+    margin-top: 1em;
+}

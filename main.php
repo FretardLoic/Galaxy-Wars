@@ -5,28 +5,23 @@
 	<meta charset="utf-8" />
 	<meta name="generator" content="Geany 1.27" />
   <link rel="stylesheet" href="style1.css"/>
-</head>
-
-
-
-<body>
-  <p id="joueur"></p>
-  <button onclick="nextTurn()">fin du tour</button> <br/>
-  <canvas id="zone" width="1200" height="800"></canvas>
-  <p id="info"></p>
-  
-  
-  
   <script src="model/Biomass.js" ></script>
   <script src="model/Player.js" ></script>
   <script src="model/Fleet.js" ></script>
   <script src="model/Planet.js" ></script>
   <script src="model/Galaxy.js" ></script>
   <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+
+<body>
+  <canvas id="zone" width="1200" height="800"></canvas>
+  <div id="menu" >
+      <p id="joueur-label" >Joueur: <span id="joueur"></span></p>
+      <button id="end-turn" onclick="nextTurn()">fin du tour</button> <br/>
+      <p id="info"></p>
+  </div>
   
   <script>
-    
-    
     
     var maZone = document.getElementById("zone");
     var info = document.getElementById("info");
