@@ -32,13 +32,23 @@
     
     var img = new Image();
     
-    var g = Galaxy.generator(["azer", "qsdf"], 4, 20, ctx, function() {alert(this.players[0].name)}, img);
+    var players = [
+      <?php
+        for ($i = 1; $i < $_GET["playersNb"]; ++$i) {
+          echo '"'.$_POST["player".$i].'",';
+        }
+        echo '"'.$_POST["player".$_GET["playersNb"]].'"';
+      ?>];
+    
+    var g = Galaxy.generator(players, <?php echo $_GET["aiNb"]; ?>, <?php echo $_GET["planetsNb"]; ?>, ctx, function() {
+      alert(this.players[0].name + " win!!!");
+      window.location.replace("begin.php");}, img);
     
     img.addEventListener('load', function() {
       g.draw();
     }, false);
     
-    img.src = "img/battlecruiser.jpg";
+    img.src = "img/starry_sky.jpg";
     
     
     document.getElementById("joueur").innerHTML = g.getCurrentPlayer().name;
