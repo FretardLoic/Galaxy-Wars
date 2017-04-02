@@ -1,0 +1,41 @@
+\documentclass[a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+
+\title{Projet Langages Web}
+\author{\textsc{Hardouin} Paul\\\textsc{Frétard} Loïc}
+\date{2 avril 2017}
+\begin{document}
+\maketitle
+\chapter*{Fonctionnalités}
+\section*{Page d'accueil}
+
+La page d'accueil (index.php) permet de paramétrer plusieurs chose avant de lancer une partie:
+\begin{itemize}
+ \item le nombre de joueurs humains
+ \item le nombre d'intelligences artificielles (IA)
+ \item le nombre de planètes
+\end{itemize}
+
+Le bouton valider nous amène vers la page name\_enter.php qui permet d'entrer
+les noms des joueurs humains.
+
+\section*{Déroulement d'une partie}
+
+Tous les joueurs jouent, chacun leur tour.
+Lorsque c'est au tour d'un humain de jouer, l'utilisateur peut s'il le souhaite,
+lancer une flotte depuis une de ses planètes vers une autre. Un envoi de flotte
+se déroule de la façon suivante: un premier clique sur une première planète appartenant au
+joueur actif suivi d'un deuxième clic sur n'importe quelle planète, déclenche une
+fenêtre demandant à l'utilisateur combien d'individu la flotte doit emporter. Bien sur,
+le joueur peut envoyer plusieurs flottes s'il le souhaite, ou pas du tout.
+Lorsqu'il a fini de lancer ses flottes, le joueur peut finir son tour en cliquant sur le bouton
+``fin du tour'' et le prochain joueur peut comencer son tour. Si le prochain joueur est une IA,
+Les déplacements de flottes ainsi que la croissance des populations sur les
+planètes se font lors du tour du joueur associé à ces éléments.
+Lorsqu'un joueur ne dispose plus d'aucune planète ni d'aucune flotte,
+alors ce joueur perd la partie et est retiré de la liste des joueurs
+La partie se fini lorsqu'il ne reste plus qu'un joueur.
+
+\end{document}
