@@ -38,4 +38,62 @@ Lorsqu'un joueur ne dispose plus d'aucune planète ni d'aucune flotte,
 alors ce joueur perd la partie et est retiré de la liste des joueurs
 La partie se fini lorsqu'il ne reste plus qu'un joueur.
 
+\chapter*{Fonctionnement}
+\section*{Biomass}
+
+La classe Biomass est représente une population. 
+Elle est définie par :
+\begin{itemize}
+ \item une quantité d'individu
+ \item une position
+ \item un rayon
+ \item une faction (un joueur)
+ \item un contexte pour pouvoir s'afficher
+\end{itemize}
+
+\section*{Planet}
+
+La classe Planet est une sous-classe de Biomass qui possédent une croissance (et une image) qui modélise une planète. Une planète est neutre si elle n'a pas de joueur.
+
+\section*{Fleet}
+
+Fleet est également une sous-classe de Biomass mais qui représente une flotte en mouvement. Une Fleet posséde une destination qui est une instance de Planet.
+
+\section*{Player}
+
+Player représente un joueur et possède :
+\begin{itemize}
+ \item un nom
+ \item un ensemble de Biomass
+ \item une couleur
+\end{itemize}
+Un joueur a perdu lorsqu'il n'a plus de Biomass.
+
+\section*{IAPlayer}
+
+La classe IAPlayer est une sous-classe de Player pour lequel une fonction playTurn a été définie pour lui permettre de jouer un tour sans intervention extérieur. Pour pouvoir joué, ce joueur a besoin de la Galaxy à laquelle il appartient.
+
+\section*{Galaxy}
+
+La classe Galaxy permet de modéliser et d'afficher le jeu. Une galaxy est composé :
+\begin{itemize}
+ \item d'une liste de joueurs
+ \item d'une liste de planètes
+ \item d'une image (pour le fond)
+ \item d'un contexte (pour s'afficher dans un canvas)
+ \item d'une fonction qui s’exécute quand la partie est finie
+\end{itemize}
+Ainsi, la Galaxy peut organiser le déroulement de la partie en passant d'un joueur à l'autre et ordonne à chaque tour aux Planet et au Fleet s'afficher.
+C'est également elle qui lance la fonction d'éxecution des IAPlayer.
+
+De plus, il y a un générateur de Galaxy qui prend en argument :
+\begin{itemize}
+ \item une liste de noms
+ \item un nombre d’IA
+ \item un nombre de planètes
+ \item une image (pour le fond)
+ \item un contexte (pour s'afficher dans un canvas)
+ \item une fonction de fin de partie.
+\end{itemize}
+
 \end{document}
