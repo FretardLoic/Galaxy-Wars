@@ -98,19 +98,19 @@
               }
               ++j;
             }
-            maZone.removeEventListener("click", secondClick);
-            maZone.addEventListener("click", firstClick);
+            document.removeEventListener("click", secondClick);
+            document.addEventListener("click", firstClick);
           }
           
-          maZone.removeEventListener("click", firstClick);
-          maZone.addEventListener("click", secondClick);
+          document.removeEventListener("click", firstClick);
+          document.addEventListener("click", secondClick);
           break;
         }
         ++i;
       }
     }
     
-    maZone.addEventListener("click", firstClick);
+    document.addEventListener("click", firstClick);
     
     var eventBufferMaxSize = 20;
     var eventBuffer = [];
@@ -177,8 +177,6 @@
     function nextTurn() {
       g.nextTurn();
       g.draw();
-      
-      maZone.addEventListener("click", firstClick);
       
       document.getElementById("joueur").innerHTML = g.getCurrentPlayer().name;
       $("#joueur").css("color", g.getCurrentPlayer().color);
