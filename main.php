@@ -52,6 +52,7 @@
     
     
     document.getElementById("joueur").innerHTML = g.getCurrentPlayer().name;
+    $("#joueur").css("color", g.getCurrentPlayer().color);
     
     
     function findPos(obj){
@@ -176,10 +177,12 @@
     function nextTurn() {
       g.nextTurn();
       g.draw();
-        
+      
+      maZone.addEventListener("click", firstClick);
+      
       document.getElementById("joueur").innerHTML = g.getCurrentPlayer().name;
+      $("#joueur").css("color", g.getCurrentPlayer().color);
     }
-    
     
   </script>
 </body>
